@@ -35,9 +35,10 @@ def test():
     tweets = db.get_datas()
     tweets_text=list()
     for tweet in tweets:
-        print("***")
-        print(tweet['text'])
+        #print("***")
+        #print(tweet['text'])
         tweets_text.append(tweet['text'])
+    return tweets_text
     #print(tweets_text)
     
 if __name__ == "__main__":
