@@ -1,6 +1,8 @@
 #ツイートを１つのテキストファイルにする
 import json
+import re
 from data import search_list
+from data import ignore_words
 from pymongo import MongoClient
 
 class Mongo:
@@ -27,11 +29,12 @@ class Mongo:
     def __del__(self):
         self.client.close()
 
-def main():
-    pass
+def get_texts(collection_name):
+    tweets_text = get_texts_list(collection_name)
+    return remove_particular_string(tweets_text)
 
-def test():
-    db = Mongo(collection_name="Hide1204_")
+def get_texts_list(collection_name):
+    db = Mongo(collection_name=collection_name)
     tweets = db.get_datas()
     tweets_text=list()
     for tweet in tweets:
@@ -40,7 +43,21 @@ def test():
         tweets_text.append(tweet['text'])
     return tweets_text
     #print(tweets_text)
-    
+
+def remove_particular_string(tweets_text):
+    tweets_text_after_process=[]
+    for text in tweets_text:
+        #print("***")
+        #print(tweets_text['text'])
+        flag = True
+        for ignore_word in ignore_words.ignore_words:
+            if re.search(re.escape(ignore_word["word"]),text):
+                flag = False
+                break
+        if flag:
+            tweets_text_after_process.append(text)
+    return tweets_text_after_process
+
 if __name__ == "__main__":
-    #main()
-    test()
+    main()
+    #test()
